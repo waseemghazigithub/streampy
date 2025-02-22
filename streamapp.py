@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import os 
 from io import BytesIO
-import openpyxl
+# import openpyxl
 
 # Set up the app
 st.set_page_config(page_title="📀 Data Sweeper", layout='wide')
