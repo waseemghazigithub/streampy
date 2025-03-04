@@ -41,7 +41,7 @@ def calculate_strength(password):
     else:
         strength = "Strong"
     
-    return strength, feedback
+    return strength, feedback, score
 
 # Streamlit UI
 st.title("🔒 Password Strength Meter")
@@ -49,9 +49,12 @@ st.write("Enter a password to check its strength and get improvement suggestions
 
 password = st.text_input("Enter Password", type="password")
 if password:
-    strength, feedback = calculate_strength(password)
+    strength, feedback, score = calculate_strength(password)
     
     st.subheader(f"Password Strength: {strength}")
+    
+    # Strength Bar
+    st.progress(score / 4)  # Normalizing score to range 0-1
     
     if feedback:
         st.warning("\n".join(feedback))
