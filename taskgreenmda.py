@@ -58,10 +58,10 @@ def main():
         in_progress_count = (df['Status'] == 'Inprogress').sum()
         pending_count = (df['Status'] == 'Pending').sum()
         
-        st.markdown(f"- ✅ **Completed Tasks**: {completed_count}")
-        st.markdown(f"- 🕒 **In Progress Tasks**: {in_progress_count}")
-        st.markdown(f"- ⏳ **Pending Tasks**: {pending_count}")
-        st.markdown(f"- 📊 **Total Tasks**: {total_tasks}")
+        st.markdown(f"- ✅ **Completed Tasks **: {completed_count}")
+        st.markdown(f"- 🕒 **In Progress Tasks **: {in_progress_count}")
+        st.markdown(f"- ⏳ **Pending Tasks **: {pending_count}")
+        st.markdown(f"- 📊 **Total Tasks **: {total_tasks}")
     
     # # Allow users to download the fixed data
     # csv = df.to_csv(index=False).encode('utf-8')
