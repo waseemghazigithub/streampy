@@ -30,7 +30,7 @@ def main():
     # Load the fixed CSV data directly
     df = load_data()
     #st.dataframe(df)
-    menu = ["All Projects","Green Field City", "M.D.A", "Accounting Financial Module", "Task Statistics"]
+    menu = ["All Projects","Green Field City", "M.D.A", "Accounting Financial Module", "Statistics"]
     choice = st.sidebar.selectbox("Projects", menu)
     
     if choice == "All Projects":
@@ -49,9 +49,20 @@ def main():
         st.subheader(f"Task Breakdown: {choice}")
         green_field_df = df[df['Project'] == 'Accounting Financial Module']
         st.dataframe(green_field_df)
-    if choice == "Task Statisticse":
+    if choice == "Statistics":
         st.subheader(f"Task Breakdown: {choice}")
-
+        completed_count = (df['Status'] == 'Completed').sum()
+    
+        # Optionally, show more stats
+        total_tasks = len(df)
+        in_progress_count = (df['Status'] == 'Inprogress').sum()
+        pending_count = (df['Status'] == 'Pending').sum()
+        
+        st.markdown(f"- ✅ **Completed Tasks**: {completed_count}")
+        st.markdown(f"- 🕒 **In Progress Tasks**: {in_progress_count}")
+        st.markdown(f"- ⏳ **Pending Tasks**: {pending_count}")
+        st.markdown(f"- 📊 **Total Tasks**: {total_tasks}")
+    
     # # Allow users to download the fixed data
     # csv = df.to_csv(index=False).encode('utf-8')
     # st.download_button("Download CSV", csv, "task_data.csv", "text/csv")
