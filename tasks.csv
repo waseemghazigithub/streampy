@@ -5,9 +5,9 @@ Data Migration to SQL Server (Required Tables) ,Completed,25-03-2025,waseem,Gree
 Data Records and Values Compression Matching ,Completed,27-03-2025,waseem,Green Field City
 Required Entry Frontend Forms -4,Completed,07-04-2025,"Murtaza,Aqeel",Green Field City
 Required Entry Frontend Reports/Reports Views,Completed,06-04-2025,"Waseem,Aqeel",Green Field City
-Software Uploading ,Inprogress,06-04-2025,"Murtaza,Aqeel,Waseem",Green Field City
-Data compression new software with old software,Pending,10 Days Requied,Users of Nobel heights,Green Field City
-Data Analysis (FoxPro/MS-Access for Future Development) ,Pending,15 Days Required,"Waseem,Aqeel,Murtaza",M.D.A
+Software Uploading ,Completed,06-04-2025,"Murtaza,Aqeel,Waseem",Green Field City
+Data compression new software with old software,Inprogress,10 Days Requied,Users of Nobel heights,Green Field City
+Data Analysis (FoxPro/MS-Access for Future Development) ,Inprogress,15 Days Required,"Waseem,Aqeel,Murtaza",M.D.A
 Data Migration in Middleware Software,Pending,30 Days Required,"Waseem,Aqeel",M.D.A
 Data Migration to SQL Server (Required Tables),Pending,45 Days Required,Waseem,M.D.A
 Data Records and Values Compression Matching ,Pending,20 Days Required,"Waseem,Aqeel",M.D.A
@@ -28,7 +28,7 @@ Testing program execution.,Pending,,,Accounting Financial Module
 Software uploading,Pending,,,Accounting Financial Module
 Error Handling after Upload ,Pending,,,Accounting Financial Module
 Reports / All Crops Reports ,Completed,,"Waseem,Aqeel,Murtaza",Maxim Agro
-Harvesting Crops Frontend Form/Reports,Pending,,"Aqeel,Murtaza",Maxim Agro
+Harvesting Crops Frontend Form/Reports,Inprogress,,"Aqeel,Murtaza",Maxim Agro
 EZ Face machine Data Intigration ,Completed,,"Waseem,Aqeel,Murtaza",Attendance Module
 EZ Face machine Data reporting and forms.,Completed,,"Waseem,Aqeel,Murtaza",Attendance Module
 Upgradation with new software ,Pending,,"Waseem,Aqeel,Murtaza",Payroll Module
