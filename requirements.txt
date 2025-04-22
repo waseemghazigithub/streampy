@@ -1,3 +1,5 @@
+streamlit
 pandas
-openpyxl
-num2words
+pyodbc
+dbfread
+sqlalchemy
