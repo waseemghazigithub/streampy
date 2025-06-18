@@ -30,7 +30,7 @@ def main():
     # Load the fixed CSV data directly
     df = load_data()
     #st.dataframe(df)
-    menu = ["All Projects","Green Field City", "M.D.A", "Accounting Financial Module","Maxim Agro","Attendance Module","Payroll Module", "Statistics"]
+    menu = ["All Projects","Green Field City", "M.D.A", "Accounting Financial Module","Maxim Agro","Attendance Module","Payroll Module", "Garden City","Statistics"]
     choice = st.sidebar.selectbox("Projects", menu)
     
     if choice == "All Projects":
@@ -61,7 +61,12 @@ def main():
     if choice == "Payroll Module":
         st.subheader(f"Task Breakdown: {choice}") 
         green_field_df = df[df['Project'] == 'Payroll Module']
-        st.dataframe(green_field_df)              
+        st.dataframe(green_field_df) 
+    if choice == "Garden City":
+        st.subheader(f"Task Breakdown: {choice}") 
+        green_field_df = df[df['Project'] == 'Garden City']
+        st.dataframe(green_field_df)     
+
     if choice == "Statistics":
         st.subheader(f"Task Breakdown: {choice}")
         completed_count = (df['Status'] == 'Completed').sum()
