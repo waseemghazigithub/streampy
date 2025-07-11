@@ -8,10 +8,10 @@ import streamlit.components.v1 as components
 def get_connection():
     return pyodbc.connect(
         r'DRIVER={SQL Server};'
-        r'SERVER=182.184.63.27,1434;'
+        r'SERVER=192.168.10.17,1434;'
         r'DATABASE=Agriculture Management;',  # ✅ Corrected format
         user='sa',
-        password='Maxicom777'
+        password='1234'
     )
 
 # --- Load crop info view ---
