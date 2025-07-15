@@ -3,16 +3,55 @@ import pandas as pd
 import pyodbc
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 import streamlit.components.v1 as components
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Load values from .env
+
+server = os.getenv("DB_SERVER")
+database = os.getenv("DB_NAME")
+user = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
+APP_PASSWORD = os.getenv("APP_PASSWORD")
+
+# --- Check login---
+def check_login():
+    st.title("🔒 لاگ ان درکار ہے")
+    password = st.text_input("پاس ورڈ درج کریں:", type="password")
+
+    if password == APP_PASSWORD:
+        st.success("✅ درست پاس ورڈ")
+        return True
+    elif password != "":
+        st.error("❌ غلط پاس ورڈ")
+        return False
+    else:
+        st.warning("براہ کرم پاس ورڈ درج کریں")
+        return False
+
+# --- Streamlit Page Setup ---
+st.set_page_config(page_title="📋 Crop Info App", layout="wide")
+st.title("🌾 فصل کی معلومات کا سسٹم")
+
+if not check_login():
+    st.stop()
 
 # --- Database connection ---
 def get_connection():
-    return pyodbc.connect(
-        r'DRIVER={SQL Server};'
-        r'SERVER=192.168.10.17,1434;'
-        r'DATABASE=Agriculture Management;',  # ✅ Corrected format
-        user='sa',
-        password='1234'
-    )
+    try:
+        conn = pyodbc.connect(
+            f"DRIVER={{SQL Server}};"
+            f"SERVER={os.getenv('DB_SERVER')};"
+            f"DATABASE={os.getenv('DB_NAME')};"
+            f"UID={os.getenv('DB_USER')};"
+            f"PWD={os.getenv('DB_PASSWORD')}",
+            timeout=5  # Optional: timeout in seconds
+        )
+        return conn
+    except pyodbc.Error as e:
+        st.error("❌ ڈیٹا بیس سے کنکشن قائم نہیں ہو سکا۔")
+        st.exception("Data Base connection required")  # Optional: Show detailed error
+        st.stop()
 
 # --- Load crop info view ---
 @st.cache_data
@@ -44,30 +83,33 @@ def load_images(cinfoid):
     return df
 
 #---------- ifram video ------
-def embed_youtube(url, width=700, height=400):
-    # Clean YouTube link to embed format
-    if "watch?v=" in url:
-        video_id = url.split("watch?v=")[-1]
-    elif "youtu.be/" in url:
-        video_id = url.split("youtu.be/")[-1]
-    else:
-        st.warning("❌ غلط YouTube لنک")
+def embed_youtube(url, width=720, height=400):
+    if not url:
+        st.info("ویڈیو دستیاب نہیں ہے۔")
         return
 
-    embed_url = f"https://www.youtube.com/embed/{video_id}"
-    iframe_html = f"""
-        <iframe width="{width}" height="{height}" src="{embed_url}" 
-        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen></iframe>
-    """
-    components.html(iframe_html, height=height)
+    video_id = None
+
+    if "watch?v=" in url:
+        video_id = url.split("watch?v=")[-1].split("&")[0]
+    elif "youtu.be/" in url:
+        video_id = url.split("youtu.be/")[-1].split("?")[0]
+    elif "shorts/" in url:
+        video_id = url.split("shorts/")[-1].split("?")[0]
+
+    if video_id:
+        embed_url = f"https://www.youtube.com/embed/{video_id}"
+        iframe_html = f"""
+            <iframe width="{width}" height="{height}" src="{embed_url}" 
+            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen></iframe>
+        """
+        components.html(iframe_html, height=height + 50)
+    else:
+        st.warning("❌ درست YouTube ویڈیو ID حاصل نہیں ہو سکی۔")
 #-----------------------------
 
 
-
-# --- Streamlit Page Setup ---
-st.set_page_config(page_title="📋 Crop Info App", layout="wide")
-st.title("🌾 فصل کی معلومات کا سسٹم")
 
 # --- Load data ---
 data = load_main_data()
@@ -144,6 +186,7 @@ else:
 
 # --- Show YouTube video ---
 yt_link = row_data["YouTubeLink"]
+#st.write(f"📹 Video Link: {yt_link}")
 if yt_link:
     st.markdown("---")
     st.subheader("🎬 متعلقہ ویڈیو")
