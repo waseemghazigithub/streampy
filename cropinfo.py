@@ -8,17 +8,17 @@ import os
 
 load_dotenv()  # Load values from .env
 
-server = os.getenv("DB_SERVER")
-database = os.getenv("DB_NAME")
-user = os.getenv("DB_USER")
-password = os.getenv("DB_PASSWORD")
-APP_PASSWORD = os.getenv("APP_PASSWORD")
+# server = os.getenv("DB_SERVER")
+# database = os.getenv("DB_NAME")
+# user = os.getenv("DB_USER")
+# password = os.getenv("DB_PASSWORD")
+#APP_PASSWORD = os.getenv("APP_PASSWORD")
+APP_PASSWORD = st.secrets["APP_PASSWORD"]
 
 # --- Check login---
 def check_login():
     st.title("🔒 لاگ ان درکار ہے")
     password = st.text_input("پاس ورڈ درج کریں:", type="password")
-
     if password == APP_PASSWORD:
         st.success("✅ درست پاس ورڈ")
         return True
@@ -32,7 +32,6 @@ def check_login():
 # --- Streamlit Page Setup ---
 st.set_page_config(page_title="📋 Crop Info App", layout="wide")
 st.title("🌾 فصل کی معلومات کا سسٹم")
-
 if not check_login():
     st.stop()
 
@@ -40,12 +39,12 @@ if not check_login():
 def get_connection():
     try:
         conn = pyodbc.connect(
-            f"DRIVER={{SQL Server}};"
-            f"SERVER={os.getenv('DB_SERVER')};"
-            f"DATABASE={os.getenv('DB_NAME')};"
-            f"UID={os.getenv('DB_USER')};"
-            f"PWD={os.getenv('DB_PASSWORD')}",
-            timeout=5  # Optional: timeout in seconds
+                f"DRIVER={{SQL Server}};"
+                f"SERVER={st.secrets['DB_SERVER']};"
+                f"DATABASE={st.secrets['DB_NAME']};"
+                f"UID={st.secrets['DB_USER']};"
+                f"PWD={st.secrets['DB_PASSWORD']}",
+                timeout=5  # Optional: timeout in seconds
         )
         return conn
     except pyodbc.Error as e:
