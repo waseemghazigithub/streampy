@@ -1,7 +1,4 @@
 streamlit
+st-aggrid
 pandas
 pyodbc
-dbfread
-sqlalchemy
-cryptography
-st-aggrid
