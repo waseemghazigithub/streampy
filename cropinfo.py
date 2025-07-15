@@ -173,16 +173,19 @@ st.write("📌 Selected CinfoID for image:", selected_cinfoid)
 # --- Show related images ---
 image_df = load_images(selected_cinfoid)
 if not image_df.empty:
-    st.subheader("🖼️ متعلقہ تصاویر")
+    st.markdown("### 🖼️ متعلقہ تصاویر")
     cols = st.columns(3)
     for i, row in image_df.iterrows():
+        img = row["CropInfoImage"]
         try:
-            with cols[i % 3]:
-                st.image(row["CropInfoImage"], use_column_width=True)
+            if isinstance(img, (str, bytes)):
+                with cols[i % 3]:
+                    st.image(img, use_container_width=True)
         except:
-            st.warning("تصویر نہیں دکھائی جا سکی۔")
+            pass  # Don’t show warning every time
 else:
     st.info("اس فصل کی کوئی تصویر موجود نہیں ہے۔")
+
 
 # --- Show YouTube video ---
 yt_link = row_data["YouTubeLink"]
