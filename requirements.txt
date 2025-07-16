@@ -1,7 +1,7 @@
 streamlit
 pandas
 pyodbc
-st-aggrid
+st-aggrid==0.3.4
 python-dotenv
 dbfread
 sqlalchemy
