@@ -3,3 +3,5 @@ pandas
 pyodbc
 st-aggrid
 python-dotenv
+dbfread
+sqlalchemy
