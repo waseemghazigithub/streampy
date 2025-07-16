@@ -3,19 +3,11 @@ import pandas as pd
 import pyodbc
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 import streamlit.components.v1 as components
-from dotenv import load_dotenv
-import os
 
-load_dotenv()  # Load values from .env
-
-# server = os.getenv("DB_SERVER")
-# database = os.getenv("DB_NAME")
-# user = os.getenv("DB_USER")
-# password = os.getenv("DB_PASSWORD")
-#APP_PASSWORD = os.getenv("APP_PASSWORD")
+# --- Load login password from secrets ---
 APP_PASSWORD = st.secrets["APP_PASSWORD"]
 
-# --- Check login---
+# --- Check login ---
 def check_login():
     st.title("🔒 لاگ ان درکار ہے")
     password = st.text_input("پاس ورڈ درج کریں:", type="password")
@@ -35,21 +27,21 @@ st.title("🌾 فصل کی معلومات کا سسٹم")
 if not check_login():
     st.stop()
 
-# --- Database connection ---
+# --- Database connection using pymssql ---
 def get_connection():
     try:
         conn = pyodbc.connect(
-                f"DRIVER={{SQL Server}};"
-                f"SERVER={st.secrets['DB_SERVER']};"
-                f"DATABASE={st.secrets['DB_NAME']};"
-                f"UID={st.secrets['DB_USER']};"
-                f"PWD={st.secrets['DB_PASSWORD']}",
-                timeout=5  # Optional: timeout in seconds
+            f"DRIVER={{ODBC Driver 17 for SQL Server}};"
+            f"SERVER={st.secrets['DB_SERVER']};"
+            f"DATABASE={st.secrets['DB_NAME']};"
+            f"UID={st.secrets['DB_USER']};"
+            f"PWD={st.secrets['DB_PASSWORD']}",
+            timeout=5
         )
         return conn
-    except pyodbc.Error as e:
-        st.error("❌ ڈیٹا بیس سے کنکشن قائم نہیں ہو سکا۔")
-        st.exception("Data Base connection required")  # Optional: Show detailed error
+    except Exception as e:
+        st.error("❌ ڈیٹا بیس کنکشن میں مسئلہ ہے۔")
+        st.exception(e)
         st.stop()
 
 # --- Load crop info view ---
@@ -81,14 +73,13 @@ def load_images(cinfoid):
     conn.close()
     return df
 
-#---------- ifram video ------
+# --- Embed YouTube video ---
 def embed_youtube(url, width=720, height=400):
     if not url:
         st.info("ویڈیو دستیاب نہیں ہے۔")
         return
 
     video_id = None
-
     if "watch?v=" in url:
         video_id = url.split("watch?v=")[-1].split("&")[0]
     elif "youtu.be/" in url:
@@ -106,15 +97,11 @@ def embed_youtube(url, width=720, height=400):
         components.html(iframe_html, height=height + 50)
     else:
         st.warning("❌ درست YouTube ویڈیو ID حاصل نہیں ہو سکی۔")
-#-----------------------------
 
-
-
-# --- Load data ---
+# --- Load and display grid data ---
 data = load_main_data()
-data_grid = data.head(6)  # ✅ Only top 6 rows for display
-#AgGrid(data_grid)
-# --- Show interactive grid ---
+data_grid = data.head(6)
+
 st.subheader("📊 تمام فصلوں کی تفصیل (Grid View)")
 
 gb = GridOptionsBuilder.from_dataframe(data_grid)
@@ -127,9 +114,6 @@ grid_response = AgGrid(
     update_mode=GridUpdateMode.SELECTION_CHANGED,
     fit_columns_on_grid_load=True
 )
-selected_row = grid_response["selected_rows"]
-
-# --- Safely handle selected row ---
 
 selected_row_df = grid_response["selected_rows"]
 
@@ -137,24 +121,23 @@ if selected_row_df is None or selected_row_df.empty:
     st.warning("⚠️ براہ کرم کوئی قطار منتخب کریں۔")
     st.stop()
 else:
-    # Get the first selected row as a dict
     selected_data = selected_row_df.iloc[0].to_dict()
 
-    if "CinfoID" in selected_data:
-        selected_cinfoid = selected_data["CinfoID"]
-        st.success(f"✅ منتخب فصل ID: {selected_cinfoid}")
-    else:
-        st.error("🔴 منتخب قطار میں 'CinfoID' موجود نہیں ہے۔")
-        st.stop()
+# --- Get selected data ---
+#selected_data = selected_row_df[0]
+selected_cinfoid = selected_data.get("CinfoID")
 
+if not selected_cinfoid:
+    st.error("🔴 منتخب قطار میں 'CinfoID' موجود نہیں ہے۔")
+    st.stop()
 
-# --- Get full row from complete data ---
+st.success(f"✅ منتخب فصل ID: {selected_cinfoid}")
+
+# --- Get full row by ID ---
 row_data = data[data["CinfoID"] == selected_cinfoid]
-
 if row_data.empty:
     st.error("🔴 مکمل ڈیٹا حاصل نہیں ہو سکا۔")
     st.stop()
-
 row_data = row_data.iloc[0]
 
 # --- Show crop details ---
@@ -168,7 +151,6 @@ st.write(
 )
 st.write(f"🗒️ **ریمارکس**: {row_data['Remarks']}")
 
-st.write("📌 Selected CinfoID for image:", selected_cinfoid)
 # --- Show related images ---
 image_df = load_images(selected_cinfoid)
 if not image_df.empty:
@@ -176,19 +158,14 @@ if not image_df.empty:
     cols = st.columns(3)
     for i, row in image_df.iterrows():
         img = row["CropInfoImage"]
-        try:
-            if isinstance(img, (str, bytes)):
-                with cols[i % 3]:
-                    st.image(img, use_container_width=True)
-        except:
-            pass  # Don’t show warning every time
+        if isinstance(img, (str, bytes)):
+            with cols[i % 3]:
+                st.image(img, use_container_width=True)
 else:
     st.info("اس فصل کی کوئی تصویر موجود نہیں ہے۔")
 
-
 # --- Show YouTube video ---
 yt_link = row_data["YouTubeLink"]
-#st.write(f"📹 Video Link: {yt_link}")
 if yt_link:
     st.markdown("---")
     st.subheader("🎬 متعلقہ ویڈیو")
