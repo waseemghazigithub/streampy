@@ -12,6 +12,7 @@ st.subheader("This is a subheader")
 
 # Text
 st.text("Hello this is text")
+st.write("Hello this is text")
 
 # Markdown
 st.markdown("### This is a markdown")
