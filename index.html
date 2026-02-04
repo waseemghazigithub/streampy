@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Maxim Group - Task Manager</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.39.0/build/stlite.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        background-color: #0e1117;
+      }
+      #root {
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.39.0/build/stlite.js"></script>
+    <script>
+      const pythonCode = `
+import streamlit as st
+import pandas as pd
+import io
+
+st.markdown(
+    """
+    <style>
+    .block-container {
+        padding-top: 2rem;
+    }
+    .stDataFrame {
+        width: 100%;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+def load_data():
+    return pd.read_csv('tasks.csv')
+
+def main():
+    st.subheader("Maxim Group of Companies Software Upgradation")
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown('**1. Green Field City**')
+        st.caption("Target: April 5, 2025")
+    with col2:
+        st.markdown('**2. MDA Recovery**')
+        st.caption("Target: Sept 2026")
+    with col3:
+        st.markdown('**3. Finance Module**')
+        st.caption("Integration Phase")
+
+    df = load_data()
+    
+    menu = ["All Projects","Green Field City", "M.D.A", "Accounting Financial Module","Maxim Agro","Attendance Module","Payroll Module", "Garden City","Statistics"]
+    choice = st.sidebar.selectbox("Select Project", menu)
+    
+    st.divider()
+
+    if choice == "All Projects":
+        st.subheader(f"📊 {choice}")
+        st.dataframe(df, use_container_width=True)
+
+    elif choice == "Statistics":
+        st.subheader("📊 Project Overview")
+        total = len(df)
+        done = (df['Status'] == 'Completed').sum()
+        prog = (df['Status'] == 'Inprogress').sum()
+        pend = (df['Status'] == 'Pending').sum()
+        
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Total", total)
+        m2.metric("Completed", done, f"{int(done/total*100)}%")
+        m3.metric("In Progress", prog)
+        m4.metric("Pending", pend)
+        
+        st.bar_chart(df['Status'].value_counts())
+    
+    else:
+        st.subheader(f"📁 {choice}")
+        filtered_df = df[df['Project'] == choice]
+        if not filtered_df.empty:
+            st.dataframe(filtered_df, use_container_width=True)
+        else:
+            st.info("No tasks found for this project.")
+
+if __name__ == "__main__":
+    main()
+`;
+
+      const csvData = `Description,Status,Expected Date,Person engaged,Project
+Data Analysis (Old MS-Access 2003) ,Completed,21-03-2025,waseem,Green Field City
+Data Migration in Middleware Software ,Completed,24-03-2025,waseem,Green Field City
+Data Migration to SQL Server (Required Tables) ,Completed,25-03-2025,waseem,Green Field City
+Data Records and Values Compression Matching ,Completed,27-03-2025,waseem,Green Field City
+Required Entry Frontend Forms -4,Completed,07-04-2025,"Murtaza,Aqeel",Green Field City
+Required Entry Frontend Reports/Reports Views,Completed,06-04-2025,"Waseem,Aqeel",Green Field City
+Software Uploading ,Completed,08-04-2025,"Murtaza,Aqeel,Waseem",Green Field City
+Data compression new software with old software,Completed,20-04-2025,Users of Nobel heights,Green Field City
+Data Analysis (FoxPro/MS-Access for Future Development) ,Completed,15 Days Required,"Waseem,Aqeel,Murtaza",M.D.A
+Data Migration in Middleware Software,Completed,30 Days Required,"Waseem,Aqeel",M.D.A
+Additional work ( Required MDA audit reports),Completed,3 day after 21/4/25,"Waseem,Aqeel",M.D.A
+Additional work ( Required after audit meeting),Completed,3 day after 29/4/25,"Waseem,Aqeel",M.D.A
+Additional work ( Required Finical year 2024-2025 budget),Completed,3 day after 11/6/25,Aqeel,M.D.A
+Additional work ( Required Finical year 2024-2025 budget),Completed,3 day after 11/4/25,Aqeel,M.D.A
+Data Migration to SQL Server (Required Tables),Inprogress,45 Days Required,Waseem,M.D.A
+Data Records and Values Compression Matching ,Inprogress,20 Days Required,"Waseem,Aqeel",M.D.A
+Required Frontend Forms/Processing Module/Reports ,Inprogress,6 Months Approx.,"Murtaza,Waseem,Aqeel",M.D.A
+Software Upload & Testing (Development Mode) ,Pending,15 Days Approx,"Waseem,Aqeel,Murtaza",M.D.A
+Error Handling after Upload ,Pending,15 Days Approx.,"Waseem,Murtaza",M.D.A
+Data Testing (Compare with Old Software) ,Pending,2 Months Approx,"Waseem,Aqeel,Murtaza",M.D.A
+Software Parallel Running ,Pending,2 Months Approx,"Waseem,Aqeel,Murtaza",M.D.A
+Additional Resource Requirement (Developer for Parallel Development),Pending,,,Accounting Financial Module
+Basic Analysis Financial Process Module,Pending,,,Accounting Financial Module
+Complete Workflow Definition and explain.,Pending,,,Accounting Financial Module
+Discuss basic output reports,Pending,,,Accounting Financial Module
+Workflow Flowchart.,Pending,,,Accounting Financial Module
+Basic Data Table Structuring and Table Creation.,Pending,,,Accounting Financial Module
+Development frontend forms.,Pending,,,Accounting Financial Module
+Reports / document design and development,Pending,,,Accounting Financial Module
+Testing program execution.,Pending,,,Accounting Financial Module
+Software uploading,Pending,,,Accounting Financial Module
+Error Handling after Upload ,Pending,,,Accounting Financial Module
+Reports / All Crops Reports ,Completed,,"Waseem,Aqeel,Murtaza",Maxim Agro
+Harvesting Crops Frontend Form/Reports,Completed,20-04-2024,"Aqeel,Murtaza",Maxim Agro
+Threshing / weighted  update forms,Completed,,"Aqeel,Murtaza",Maxim Agro
+Experimental research From Entry /Report,Inprogress,18-06-2025,Murtaza,Maxim Agro
+EZ Face machine Data Intigration ,Completed,,"Waseem,Aqeel,Murtaza",Attendance Module
+EZ Face machine Data reporting and forms.,Completed,,"Waseem,Aqeel,Murtaza",Attendance Module
+Upgradation with new software ,Pending,,"Waseem,Aqeel,Murtaza",Payroll Module
+Outstanding Detail list and Different summary as per instruction Waseem Sahib,Completed,16-06-2025 to 18-06-2025 ,Waseem,Garden City
+Store Inventroy system  forms/reports.,Completed,15-08-2025 to 18-09-2025,"Aqeel,Murtaza",Maxim Agro
+Automated Scheduler Message system on whatsup,Completed,15-12-2025 to 04-02-2026,Waseem,Maxim Agro
+Maxim organic Web site on shopyfiy  timely updated,Inprogress,,,
+Procurement / Inventory Management system,Inprogress,15-12-2025 to 04-02-2026,,Accounting Financial Module`;
+
+      stlite.mount(
+        {
+          requirements: ["pandas"],
+          entrypoint: "taskgreenmda.py",
+          files: {
+            "taskgreenmda.py": pythonCode,
+            "tasks.csv": csvData,
+          },
+        },
+        document.getElementById("root")
+      );
+    </script>
+  </body>
+</html>
